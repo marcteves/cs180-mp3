@@ -9,7 +9,6 @@
 import email
 import argparse
 import os
-import numpy as np
 import sys
 import traceback
 import logging
@@ -40,6 +39,8 @@ encodings = ['utf-8','utf-7','latin_1']
 html_parser = HTMLStripper()
 print("Mail strip started")
 
+# extract text/ parts from the email given by <filename> and save to
+# text/<filename>
 for filename in args.filename:
     success = False
     write_path = 'text/' + os.path.basename(filename)
@@ -54,11 +55,13 @@ for filename in args.filename:
                         try:
                             if (part.get_content_subtype() == 'html'):
                                 html_parser.feed(part.get_payload())
-                                write_obj.write(html_parser.get_result())
+                                text = html_parser.get_result().casefold()
+                                write_obj.write(text)
                                 html_parser.reset()
                                 html_parser.data_clear()
                             else:
-                                write_obj.write(part.get_payload())
+                                text = part.get_payload().casefold()
+                                write_obj.write(text)
                         except Exception as e:
                             logging.error(traceback.format_exc())
             success = True
