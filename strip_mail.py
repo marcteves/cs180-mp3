@@ -38,7 +38,7 @@ encodings = ['utf-8','utf-7','latin_1']
 html_parser = HTMLStripper()
 print("Mail strip started")
 
-re_search = r'[^ \t\r\f\va-zA-Z]+'
+re_search = r'[^\' \t\r\f\va-zA-Z]+'
 
 # extract text/ parts from the email given by <filename> and save to
 # text/<filename>
@@ -73,6 +73,7 @@ for filename in args.filename:
             print("Processing %s success!" % (filename))
             break
         except UnicodeDecodeError as e:
+            pass
             # print("Unicode error with file %s using %s" % (filename, e))
             # logging.error(traceback.format_exc())
     if not success:
