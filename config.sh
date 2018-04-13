@@ -1,0 +1,13 @@
+REFERENCE=trec07p/full/index
+TRAINING_TEXT=training_concat_text
+TRAINING_LIST=training_list
+TRAINING_CSV=dataset-training.csv
+TRAIN_HS=train_ham_spam
+TEST_LIST=test_set_list
+TEST_CSV=dataset-test.csv
+TEST_HS=test_ham_spam
+DICT_FILE=dictionary
+WORD_COUNT=35000
+NUM_TRAIN=45251
+DATA_PATH=trec07p/data/
+TEXT_PATH=text/

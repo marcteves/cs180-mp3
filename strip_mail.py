@@ -73,8 +73,8 @@ for filename in args.filename:
             print("Processing %s success!" % (filename))
             break
         except UnicodeDecodeError as e:
-            print("Unicode error with file %s using %s" % (filename, e))
-            logging.error(traceback.format_exc())
+            # print("Unicode error with file %s using %s" % (filename, e))
+            # logging.error(traceback.format_exc())
     if not success:
         print("Processing %s FAILURE!" % (filename))
         # try:
