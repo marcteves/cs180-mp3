@@ -1,6 +1,7 @@
 source config.sh
 # just in case git removes file permissions
 chmod +x *.py
+mkdir text
 # strip the text parts from the emails
 find "$DATA_PATH" -type f | xargs ./strip_mail.py
 # Build a list of emails that form the training set.
