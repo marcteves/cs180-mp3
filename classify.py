@@ -81,7 +81,7 @@ trace_data = go.Scatter(
         )
 
 layout1 = go.Layout(
-        title = 'plot using' + args.train_set,
+        title = 'plot using ' + args.train_set,
         xaxis = dict(
             title = 'lambda values',
             ),
