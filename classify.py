@@ -10,6 +10,8 @@ import traceback
 import logging
 import numpy as np
 import scipy.sparse as ss
+import plotly.offline as plt
+import plotly.graph_objs as go
 from sklearn.naive_bayes import BernoulliNB 
 from sklearn.naive_bayes import MultinomialNB 
 
@@ -26,7 +28,6 @@ parser.add_argument("train_tags")
 
 parser.add_argument("test_set")
 parser.add_argument("test_tags")
-parser.add_argument("output")
 
 args = parser.parse_args()
 
@@ -58,6 +59,7 @@ accuracy_m = accuracy_m / len(test_tags)
 print("Multinomial accuracy:")
 print(accuracy_m)
 alphas = [0.01, 0.1, 0.2, 0.5, 1]
+accuracies = []
 for alpha in alphas:
     classifier_m = MultinomialNB(alpha=alpha)
     classifier_m.fit(train_vector, train_tags)
@@ -67,4 +69,27 @@ for alpha in alphas:
     accuracy_m = sum(1 for x,y in zip(test_tags, predicted_tags) if x == y)
     accuracy_m = accuracy_m / len(test_tags)
     print("Multinomial accuracy with lambda %f:" % (alpha))
+    accuracies.append(accuracy_m)
     print(accuracy_m)
+
+# plot alpha vs. accuracy
+trace_data = go.Scatter(
+        x = alphas,
+        y = accuracies,
+        mode = 'lines + markers',
+        name = 'data',
+        )
+
+layout1 = go.Layout(
+        title = 'plot using' + args.train_set,
+        xaxis = dict(
+            title = 'lambda values',
+            ),
+        yaxis = dict(
+            title = 'accuracy',
+            ),
+        )
+
+figure_1 = go.Figure(data = [trace_data], layout = layout1)
+
+plt.plot(figure_1, filename=args.train_set)
