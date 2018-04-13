@@ -30,3 +30,6 @@ cat "$TRAINING_LIST" | xargs cat >> "$TRAINING_TEXT"
 # save feature vectors in compressed format
 ./build_vectors.py "$DICT_FILE" "$TRAINING_CSV" "$TRAIN_LIST"
 ./build_vectors.py "$DICT_FILE" "$TEST_CSV" "$TEST_LIST"
+
+# Now classify
+./classify.py "$TRAINING_CSV".npz "$TRAIN_HS" "$TEST_CSV".npz "$TEST_HS"
