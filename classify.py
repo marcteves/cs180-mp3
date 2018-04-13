@@ -15,6 +15,17 @@ import plotly.graph_objs as go
 from sklearn.naive_bayes import BernoulliNB 
 from sklearn.naive_bayes import MultinomialNB 
 
+def compute_accuracy(classifier, test_vector, train_vector, test_tags, train_tags):
+
+    predicted_tags = classifier.predict(test_vector)
+    train_predicted = classifier.predict(train_vector)
+
+    accuracy = sum(1 for x,y in zip(test_tags, predicted_tags) if x == y)
+    accuracy += sum(1 for x,y in zip(train_tags, train_predicted) if x == y)
+    accuracy = accuracy / (len(test_tags) + len(train_tags))
+    return accuracy
+
+
 def read_tags (filename):
     with open(filename,'r') as tag_file:
         tag_lines = tag_file.read().splitlines()
@@ -40,37 +51,26 @@ test_tags = read_tags(args.test_tags)
 classifier_b = BernoulliNB()
 classifier_b.fit(train_vector, train_tags)
 
-predicted_tags = classifier_b.predict(test_vector)
-
-accuracy_b = sum(1 for x,y in zip(test_tags, predicted_tags) if x == y)
-accuracy_b = accuracy_b / len(test_tags)
-
 print("Bernoulli accuracy:")
-print(accuracy_b)
+accuracy = compute_accuracy(classifier_b, test_vector, train_vector, test_tags, train_tags)
+print(accuracy)
 
 classifier_m = MultinomialNB()
 classifier_m.fit(train_vector, train_tags)
 
-predicted_tags = classifier_m.predict(test_vector)
-
-accuracy_m = sum(1 for x,y in zip(test_tags, predicted_tags) if x == y)
-accuracy_m = accuracy_m / len(test_tags)
-
 print("Multinomial accuracy:")
-print(accuracy_m)
+accuracy = compute_accuracy(classifier_m, test_vector, train_vector, test_tags, train_tags)
+print(accuracy)
 alphas = [0.01, 0.1, 0.2, 0.5, 1]
 accuracies = []
 for alpha in alphas:
     classifier_m = MultinomialNB(alpha=alpha)
     classifier_m.fit(train_vector, train_tags)
 
-    predicted_tags = classifier_m.predict(test_vector)
-
-    accuracy_m = sum(1 for x,y in zip(test_tags, predicted_tags) if x == y)
-    accuracy_m = accuracy_m / len(test_tags)
     print("Multinomial accuracy with lambda %f:" % (alpha))
-    accuracies.append(accuracy_m)
-    print(accuracy_m)
+    accuracy = compute_accuracy(classifier_m, test_vector, train_vector, test_tags, train_tags)
+    accuracies.append(accuracy)
+    print(accuracy)
 
 # plot alpha vs. accuracy
 trace_data = go.Scatter(
