@@ -29,7 +29,6 @@ with open(args.input, 'r', errors='replace') as textfile, \
 
     # clean the text file first
     text = textfile.read()
-    text = re.sub(r'[^\sa-zA-Z]+', r'', text)
     word_dict = {}
 
     words = text.split()

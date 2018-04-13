@@ -12,6 +12,7 @@ import os
 import sys
 import traceback
 import logging
+import re
 from html.parser import HTMLParser
 
 class HTMLStripper(HTMLParser):
@@ -34,10 +35,10 @@ args = parser.parse_args()
 # These are all the reasonable english encodings. If it fails here, then it's
 # safe to just ignore the email.
 encodings = ['utf-8','utf-7','latin_1']
-# actually, it doesn't fail in latin_1, but it returns some useless gibberish 
-# interspersed with real legit stuff
 html_parser = HTMLStripper()
 print("Mail strip started")
+
+re_search = r'[^ \t\r\f\va-zA-Z]+'
 
 # extract text/ parts from the email given by <filename> and save to
 # text/<filename>
@@ -56,11 +57,15 @@ for filename in args.filename:
                             if (part.get_content_subtype() == 'html'):
                                 html_parser.feed(part.get_payload())
                                 text = html_parser.get_result().casefold()
+                                # remove all non-alphabetical chars
+                                text = re.sub(re_search, r' ', text)
                                 write_obj.write(text)
+                                # refresh the html_parser for next file
                                 html_parser.reset()
                                 html_parser.data_clear()
                             else:
                                 text = part.get_payload().casefold()
+                                text = re.sub(re_search, r' ', text)
                                 write_obj.write(text)
                         except Exception as e:
                             logging.error(traceback.format_exc())
@@ -72,7 +77,7 @@ for filename in args.filename:
             logging.error(traceback.format_exc())
     if not success:
         print("Processing %s FAILURE!" % (filename))
-        try:
-            os.remove(write_path)
-        except OSError:
-            pass
+        # try:
+        #     os.remove(write_path)
+        # except OSError:
+        #     pass
